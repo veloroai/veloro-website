@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Veloro AI — AI automation systems for modern businesses. AI voice agents, receptionists, and workflow automation.">
+    <title>Veloro AI — AI Automation Systems for Modern Businesses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'v-bg': '#0a0a0a',
+                        'v-surface': '#111111',
+                        'v-surface2': '#141414',
+                        'v-border': '#1f1f1f',
+                        'v-text': '#f0f0f0',
+                        'v-muted': '#888888',
+                        'v-purple': '#8b5cf6',
+                        'v-silver': '#c0c0c0',
+                    },
+                    fontFamily: {
+                        'display': ['Syne', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #c0c0c0 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #c0c0c0, #8b5cf6);
+            color: #0a0a0a;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 30px rgba(139,92,246,0.3);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #f0f0f0;
+            font-weight: 500;
+            padding: 14px 32px;
+            border-radius: 12px;
+            border: 1px solid rgba(139,92,246,0.4);
+            transition: all 0.2s ease;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 15px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-secondary:hover {
+            border-color: rgba(192,192,192,0.6);
+            transform: scale(1.04);
+        }
+        .v-card {
+            background: #111111;
+            border: 1px solid #1f1f1f;
+            border-radius: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .v-card:hover {
+            border-color: rgba(139,92,246,0.25);
+            box-shadow: 0 0 40px rgba(139,92,246,0.07);
+        }
+        .section-label {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #8b5cf6;
+            display: inline-block;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .hero-glow {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -55%);
+            pointer-events: none;
+        }
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(10,10,10,0.85);
+        }
+        .logo-v {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #c0c0c0, #8b5cf6);
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            color: #0a0a0a;
+            flex-shrink: 0;
+        }
+        .popular-badge {
+            background: linear-gradient(135deg, #c0c0c0, #8b5cf6);
+            color: #0a0a0a;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .play-btn {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c0c0c0, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .play-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(139,92,246,0.3);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        ::selection { background: rgba(139,92,246,0.3); color: #f0f0f0; }
+        .input-field {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #1f1f1f;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #f0f0f0;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        .input-field::placeholder { color: #555; }
+        .input-field:focus { border-color: rgba(139,92,246,0.5); }
+        .check-icon { color: #22c55e; font-size: 18px; line-height: 1; }
+        .cross-icon { color: rgba(239,68,68,0.5); font-size: 18px; line-height: 1; }
+        @media (max-width: 767px) {
+            .hero-glow { width: 400px; height: 400px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+
+        /* ── Scroll Animation Hook ── */
+        function useScrollAnim() {
+            const ref = useRef(null);
+            useEffect(() => {
+                const el = ref.current;
+                if (!el) return;
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    },
+                    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+                );
+                const items = el.querySelectorAll('.fade-in');
+                items.forEach(item => observer.observe(item));
+                return () => observer.disconnect();
+            }, []);
+            return ref;
+        }
+
+        /* ── Smooth scroll helper ── */
+        function scrollTo(id) {
+            document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ────────────────────────────────────────────
+           NAVBAR
+        ──────────────────────────────────────────── */
+        function Navbar() {
+            const [open, setOpen] = useState(false);
+            const [scrolled, setScrolled] = useState(false);
+
+            useEffect(() => {
+                const h = () => setScrolled(window.scrollY > 20);
+                window.addEventListener('scroll', h, { passive: true });
+                return () => window.removeEventListener('scroll', h);
+            }, []);
+
+            const links = [
+                { label: 'Services', href: '#services' },
+                { label: 'How It Works', href: '#process' },
+                { label: 'Pricing', href: '#pricing' },
+                { label: 'About', href: '#about' },
+                { label: 'Contact', href: '#contact' },
+            ];
+
+            const nav = (e, href) => { e.preventDefault(); setOpen(false); scrollTo(href); };
+
+            return (
+                <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'nav-blur border-b border-v-border' : ''}`}>
+                    <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+                       <a href="#" onClick={e => { e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); }} className="flex items-center gap-2.5">
+    <img src="./assets/logo.png" alt="Veloro AI" className="h-8 w-auto" />
+    <span className="font-display font-bold text-lg text-v-text tracking-tight">Veloro</span>
+</a>
+
+                        <div className="hidden md:flex items-center gap-8">
+                            {links.map(l => (
+                                <a key={l.href} href={l.href} onClick={e => nav(e,l.href)} className="text-[13px] text-v-muted hover:text-v-text transition-colors">{l.label}</a>
+                            ))}
+                            <a href="https://cal.com/veloroai" target="_blank" rel="noopener noreferrer" className="btn-primary !text-[13px] !py-2.5 !px-5">Book a Demo</a>
+                        </div>
+
+                        <button className="md:hidden text-v-text p-2 -mr-2" onClick={() => setOpen(!open)} aria-label="Menu">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                                {open
+                                    ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+                                    : <><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></>
+                                }
+                            </svg>
+                        </button>
+                    </div>
+
+                    {open && (
+                        <div className="md:hidden nav-blur border-t border-v-border">
+                            <div className="px-6 py-5 flex flex-col gap-4">
+                                {links.map(l => (
+                                    <a key={l.href} href={l.href} onClick={e => nav(e,l.href)} className="text-v-muted hover:text-v-text transition-colors py-1">{l.label}</a>
+                                ))}
+                                <a href="https://cal.com/veloroai" target="_blank" rel="noopener noreferrer" className="btn-primary text-center !text-sm !py-3 mt-2">Book a Demo</a>
+                            </div>
+                        </div>
+                    )}
+                </nav>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           HERO
+        ──────────────────────────────────────────── */
+        function Hero() {
+            const ref = useScrollAnim();
+            return (
+                <section ref={ref} className="relative min-h-screen flex items-center justify-center px-6 pt-28 pb-20 overflow-hidden">
+                    <div className="hero-glow"></div>
+                    <div className="relative z-10 max-w-4xl mx-auto text-center">
+                        <h1 className="fade-in font-display font-extrabold text-[2.75rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] leading-[0.95] tracking-tight mb-8">
+                            <span className="gradient-text">AI Automation</span><br/>
+                            <span className="text-v-text">Systems for Modern</span><br/>
+                            <span className="text-v-text">Businesses</span>
+                        </h1>
+                        <p className="fade-in text-v-muted text-lg md:text-xl max-w-2xl mx-auto mb-4 leading-relaxed" style={{transitionDelay:'0.1s'}}>
+                            Veloro builds AI voice agents, receptionists, and workflow automations that help businesses capture leads, book appointments, and reduce manual work.
+                        </p>
+                        <p className="fade-in text-[#666] text-sm md:text-base max-w-xl mx-auto mb-10 leading-relaxed" style={{transitionDelay:'0.15s'}}>
+                            Currently focused on helping dental clinics handle missed calls, after-hours inquiries, appointment booking, and follow-ups.
+                        </p>
+                        <div className="fade-in flex flex-col sm:flex-row gap-4 justify-center" style={{transitionDelay:'0.2s'}}>
+                            <a href="https://cal.com/veloroai" target="_blank" rel="noopener noreferrer" className="btn-primary">Book a Free Demo</a>
+                            <a href="#process" onClick={e => { e.preventDefault(); scrollTo('#process'); }} className="btn-secondary">See How It Works</a>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           PAIN POINTS
+        ──────────────────────────────────────────── */
+        function PainPoints() {
+            const ref = useScrollAnim();
+            const pains = [
+                { t: "Phones ring during busy hours", d: "Staff can't answer every call while treating patients. Callers hang up and book elsewhere.", icon: 'phone' },
+                { t: "After-hours = zero coverage", d: "Patients call at night, on weekends, on holidays. No one picks up. They move on.", icon: 'moon' },
+                { t: "Front desk is overloaded", d: "Manual scheduling, rescheduling, and follow-ups eat up hours every day.", icon: 'overload' },
+                { t: "Slow follow-ups lose patients", d: "A missed callback is a missed booking. There's no system to catch what falls through.", icon: 'clock' },
+                { t: "Lost appointment opportunities", d: "Every unanswered call, every missed rebook, is direct revenue walking out the door.", icon: 'dollar' },
+            ];
+
+            const icons = {
+                phone: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.11 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>,
+                moon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>,
+                overload: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>,
+                clock: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+                dollar: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>,
+            };
+
+            return (
+                <section ref={ref} id="problem" className="py-24 md:py-32 px-6">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="text-center mb-16">
+                            <span className="fade-in section-label">The Problem</span>
+                            <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">Every Missed Call Is a<br/><span className="gradient-text">Missed Appointment</span></h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {pains.map((p, i) => (
+                                <div key={i} className={`fade-in v-card p-7 ${i === 4 ? 'md:col-span-2 lg:col-span-1' : ''}`} style={{transitionDelay: `${i * 0.05}s`}}>
+                                    <div className="w-10 h-10 rounded-lg bg-[rgba(139,92,246,0.08)] flex items-center justify-center mb-5">{icons[p.icon]}</div>
+                                    <h3 className="font-semibold text-v-text text-lg mb-2">{p.t}</h3>
+                                    <p className="text-v-muted text-sm leading-relaxed">{p.d}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           SERVICES
+        ──────────────────────────────────────────── */
+        function Services() {
+            const ref = useScrollAnim();
+            const services = [
+                { title: "AI Voice Receptionist", desc: "An AI agent that answers every inbound call, 24/7. Handles appointment booking, rescheduling, cancellations, and FAQs in natural conversation. Never misses a call. Never puts a patient on hold.", icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> },
+                { title: "Appointment Automation", desc: "Veloro connects the AI voice agent directly to your calendar. Patients book, reschedule, or cancel in real time — no back-and-forth, no manual entry.", icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> },
+                { title: "After-Hours Call Handling", desc: "When your clinic closes, Veloro stays open. After-hours calls are handled the same way as business hours — patients get real answers and real appointments, not a voicemail.", icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> },
+                { title: "Workflow Automation", desc: "Custom automation systems that remove repetitive manual work: follow-up sequences, reminder workflows, internal notifications, and more — built specifically for how your business operates.", icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
+            ];
+
+            return (
+                <section ref={ref} id="services" className="py-24 md:py-32 px-6">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="text-center mb-16">
+                            <span className="fade-in section-label">Services</span>
+                            <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">AI Systems That<br/><span className="gradient-text">Do the Work</span></h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            {services.map((s, i) => (
+                                <div key={i} className="fade-in v-card p-8" style={{transitionDelay: `${i * 0.05}s`}}>
+                                    <div className="w-12 h-12 rounded-xl bg-[rgba(139,92,246,0.08)] flex items-center justify-center mb-6 text-v-purple">{s.icon}</div>
+                                    <h3 className="font-semibold text-v-text text-xl mb-3">{s.title}</h3>
+                                    <p className="text-v-muted text-sm leading-relaxed">{s.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <p className="fade-in text-center text-[#555] text-xs mt-8">All systems are built using modern AI and automation tools. Fully customized to your clinic's workflow.</p>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           HOW IT WORKS
+        ──────────────────────────────────────────── */
+        function HowItWorks() {
+            const ref = useScrollAnim();
+            const steps = [
+                { n: "01", t: "Discovery Call", d: "We learn how your clinic handles calls, appointments, and follow-ups today." },
+                { n: "02", t: "Custom Build", d: "We build and configure your AI receptionist and automation workflows to match your exact process." },
+                { n: "03", t: "Integration", d: "We connect everything to your calendar and existing tools. No disruption to your current setup." },
+                { n: "04", t: "Go Live", d: "Your AI system goes live. From day one, every call is answered, every appointment is captured." },
+            ];
+
+            return (
+                <section ref={ref} id="process" className="py-24 md:py-32 px-6">
+                    <div className="max-w-5xl mx-auto">
+                        <div className="text-center mb-16">
+                            <span className="fade-in section-label">Process</span>
+                            <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">From Setup to Running<br/><span className="gradient-text">in Days</span></h2>
+                        </div>
+                        <div className="space-y-5">
+                            {steps.map((s, i) => (
+                                <div key={i} className="fade-in flex flex-col md:flex-row md:items-center gap-4 md:gap-8" style={{transitionDelay: `${i * 0.08}s`}}>
+                                    <div className="flex items-center gap-4 md:w-[200px] flex-shrink-0">
+                                        <div className="w-12 h-12 rounded-full bg-v-surface border border-v-border flex items-center justify-center flex-shrink-0">
+                                            <span className="gradient-text font-display font-bold text-sm">{s.n}</span>
+                                        </div>
+                                        <span className="font-semibold text-v-text text-lg md:hidden">{s.t}</span>
+                                    </div>
+                                    <div className="v-card p-6 md:p-8 flex-1">
+                                        <h3 className="font-semibold text-v-text text-lg mb-2 hidden md:block">{s.t}</h3>
+                                        <p className="text-v-muted text-sm leading-relaxed">{s.d}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           DEMO SECTION
+        ──────────────────────────────────────────── */
+        function DemoSection() {
+    const videoRef = React.useRef(null);
+    const [isPlaying, setIsPlaying] = React.useState(false);
+    const ref = useScrollAnim();
+
+    const toggleVideo = () => {
+        if (!videoRef.current) return;
+
+        if (videoRef.current.paused) {
+            videoRef.current.play();
+            setIsPlaying(true);
+        } else {
+            videoRef.current.pause();
+            setIsPlaying(false);
+        }
+    };
+
+    return (
+        <section ref={ref} id="demo" className="py-24 md:py-32 px-6">
+            <div className="max-w-3xl mx-auto">
+                <div className="text-center mb-12">
+                    <span className="fade-in section-label">Live Demo</span>
+                    <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">
+                        Hear It for <span className="gradient-text">Yourself</span>
+                    </h2>
+                </div>
+
+                <div className="fade-in v-card p-8 md:p-12 text-center">
+                    <div
+                        className="play-btn mx-auto mb-6"
+                        onClick={toggleVideo}
+                    >
+                        {isPlaying ? (
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="#0a0a0a">
+                                <rect x="6" y="4" width="4" height="16" />
+                                <rect x="14" y="4" width="4" height="16" />
+                            </svg>
+                        ) : (
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="#0a0a0a" stroke="none">
+                                <polygon points="6 3 20 12 6 21 6 3" />
+                            </svg>
+                        )}
+                    </div>
+
+                    <div className="rounded-xl overflow-hidden border border-v-border mb-6">
+                        <video
+                            ref={videoRef}
+                            controls
+                            className="w-full"
+                            poster="./assets/thumbnail.png"
+                            onPlay={() => setIsPlaying(true)}
+                            onPause={() => setIsPlaying(false)}
+                            onEnded={() => setIsPlaying(false)}
+                        >
+                            <source src="./assets/demovideo.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    <a
+                        href="https://cal.com/veloroai"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-primary"
+                    >
+                        Book a Free Demo
+                    </a>
+                </div>
+            </div>
+        </section>
+    );
+}
+        /* ────────────────────────────────────────────
+           USE CASES
+        ──────────────────────────────────────────── */
+        function UseCases() {
+            const ref = useScrollAnim();
+            const cases = [
+                { s: "Patient calls at 11pm with a toothache", r: "AI answers, gathers info, books the next available emergency slot." },
+                { s: "Front desk is with a patient", r: "Incoming call is handled by AI, appointment booked without interruption." },
+                { s: "Patient wants to reschedule", r: "AI checks calendar availability, reschedules in real time, no staff needed." },
+                { s: "Cancellation comes in", r: "AI logs the cancellation, sends a follow-up, opens the slot automatically." },
+                { s: "Clinic is closed for the weekend", r: "AI handles all inquiries, answers FAQs, and books Monday appointments." },
+                { s: "Staff forgets to send follow-up", r: "Automated workflow sends it on schedule, every time." },
+            ];
+
+            return (
+                <section ref={ref} id="usecases" className="py-24 md:py-32 px-6">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="text-center mb-16">
+                            <span className="fade-in section-label">Use Cases</span>
+                            <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">Built for Real<br/><span className="gradient-text">Clinic Situations</span></h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            {cases.map((c, i) => (
+                                <div key={i} className="fade-in v-card p-7" style={{transitionDelay: `${i * 0.04}s`}}>
+                                    <p className="text-v-text font-medium mb-2">{c.s}</p>
+                                    <p className="text-v-muted text-sm leading-relaxed">→ {c.r}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           COMPARISON
+        ──────────────────────────────────────────── */
+        function Comparison() {
+            const ref = useScrollAnim();
+            const rows = [
+                { f: "Available 24/7", h: false, v: true },
+                { f: "Answers every call", h: "sometimes", v: true },
+                { f: "Handles after-hours", h: false, v: true },
+                { f: "Books appointments in real time", h: true, v: true },
+                { f: "Handles rescheduling & cancellations", h: true, v: true },
+                { f: "Sends automated follow-ups", h: false, v: true },
+                { f: "Scales without extra cost", h: false, v: true },
+                { f: "Never calls in sick", h: false, v: true },
+            ];
+
+            const Cell = ({ val }) => {
+                if (val === true) return <span className="check-icon">✓</span>;
+                if (val === false) return <span className="cross-icon">✕</span>;
+                return <span className="text-v-muted text-xs italic">Sometimes</span>;
+            };
+
+            return (
+                <section ref={ref} id="comparison" className="py-24 md:py-32 px-6">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="text-center mb-6">
+                            <span className="fade-in section-label">Why Veloro</span>
+                            <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">Not a Replacement.<br/><span className="gradient-text">An Upgrade.</span></h2>
+                        </div>
+                        <p className="fade-in text-center text-[#666] text-sm mb-12 max-w-lg mx-auto"><em>Veloro is designed to support your front desk — not replace it. It handles overflow, after-hours, and automation so your team can focus on patients.</em></p>
+
+                        {/* Desktop table */}
+                        <div className="fade-in v-card overflow-hidden hidden md:block">
+                            <div className="grid grid-cols-3 border-b border-v-border">
+                                <div className="p-6"></div>
+                                <div className="p-6 text-center border-l border-v-border"><span className="text-v-muted text-sm font-medium">Human Receptionist</span></div>
+                                <div className="p-6 text-center border-l border-v-border bg-[rgba(139,92,246,0.04)]"><span className="gradient-text text-sm font-bold">Veloro AI</span></div>
+                            </div>
+                            {rows.map((r, i) => (
+                                <div key={i} className={`grid grid-cols-3 ${i < rows.length - 1 ? 'border-b border-v-border' : ''}`}>
+                                    <div className="p-5 text-sm text-v-text font-medium">{r.f}</div>
+                                    <div className="p-5 text-center border-l border-v-border flex items-center justify-center"><Cell val={r.h}/></div>
+                                    <div className="p-5 text-center border-l border-v-border bg-[rgba(139,92,246,0.02)] flex items-center justify-center"><Cell val={r.v}/></div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Mobile stacked layout */}
+                        <div className="fade-in md:hidden space-y-3">
+                            {rows.map((r, i) => (
+                                <div key={i} className="v-card p-5">
+                                    <p className="text-v-text font-medium text-sm mb-3">{r.f}</p>
+                                    <div className="flex gap-6">
+                                        <div className="flex items-center gap-2"><span className="text-v-muted text-xs">Human</span><Cell val={r.h}/></div>
+                                        <div className="flex items-center gap-2"><span className="gradient-text text-xs font-semibold">Veloro</span><Cell val={r.v}/></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           PRICING
+        ──────────────────────────────────────────── */
+        function Pricing() {
+            const ref = useScrollAnim();
+            return (
+                <section ref={ref} id="pricing" className="py-24 md:py-32 px-6">
+                    <div className="max-w-5xl mx-auto">
+                        <div className="text-center mb-6">
+                            <span className="fade-in section-label">Pricing</span>
+                            <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">Simple, Transparent<br/><span className="gradient-text">Pricing</span></h2>
+                        </div>
+                        <p className="fade-in text-center text-[#666] text-sm mb-12 max-w-lg mx-auto"><em>Pricing shown is a starting estimate. Final pricing depends on your clinic's specific needs and setup. Book a call to get a custom quote.</em></p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Starter */}
+                            <div className="fade-in v-card p-8 md:p-10 flex flex-col">
+                                <h3 className="text-v-text font-semibold text-xl mb-1">Starter</h3>
+                                <div className="mt-4 mb-6">
+                                    <span className="gradient-text font-display font-extrabold text-4xl">$[X]</span>
+                                    <span className="text-v-muted text-sm">/mo</span>
+                                </div>
+                                <ul className="space-y-3 flex-1 mb-8">
+                                    {["AI Voice Receptionist (inbound calls)","24/7 availability","Appointment booking & cancellations","Calendar integration","Email support"].map((item,i) => (
+                                        <li key={i} className="flex items-start gap-3 text-sm text-v-muted">
+                                            <span className="text-v-purple mt-0.5 flex-shrink-0">✓</span>{item}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <a href="https://cal.com/veloroai" target="_blank" rel="noopener noreferrer" className="btn-secondary text-center w-full">Book a Demo</a>
+                            </div>
+
+                            {/* Growth */}
+                            <div className="fade-in v-card p-8 md:p-10 flex flex-col relative" style={{borderColor:'rgba(139,92,246,0.3)'}}>
+                                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2"><span className="popular-badge">Most Popular</span></div>
+                                <h3 className="text-v-text font-semibold text-xl mb-1">Growth</h3>
+                                <div className="mt-4 mb-6">
+                                    <span className="gradient-text font-display font-extrabold text-4xl">$[X]</span>
+                                    <span className="text-v-muted text-sm">/mo</span>
+                                </div>
+                                <ul className="space-y-3 flex-1 mb-8">
+                                    {["Everything in Starter","After-hours call handling","Rescheduling automation","Follow-up workflow automation","Priority support","Monthly performance review"].map((item,i) => (
+                                        <li key={i} className="flex items-start gap-3 text-sm text-v-muted">
+                                            <span className="text-v-purple mt-0.5 flex-shrink-0">✓</span>{item}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <a href="https://cal.com/veloroai" target="_blank" rel="noopener noreferrer" className="btn-primary text-center w-full">Book a Demo</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           ABOUT (Updated with LinkedIn URLs)
+        ──────────────────────────────────────────── */
+        function About() {
+            const ref = useScrollAnim();
+            return (
+                <section ref={ref} id="about" className="py-24 md:py-32 px-6">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="text-center mb-12">
+                            <span className="fade-in section-label">About</span>
+                            <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">Built by People Who Take<br/><span className="gradient-text">Automation Seriously</span></h2>
+                        </div>
+                        <p className="fade-in text-v-muted text-base md:text-lg leading-relaxed text-center max-w-2xl mx-auto mb-14">
+                            Veloro is an AI automation agency focused on building practical systems that actually work. We combine AI voice technology and workflow automation to help businesses stop losing opportunities to missed calls and manual processes. We're not a software product. We build custom systems for your specific workflow.
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-md mx-auto">
+                            <a href="https://www.linkedin.com/in/muhammad-mohsin-ai/" target="_blank" rel="noopener noreferrer" className="fade-in v-card p-6 text-center block hover:border-[rgba(139,92,246,0.4)]">
+                                <div className="w-12 h-12 rounded-full bg-[rgba(139,92,246,0.08)] flex items-center justify-center mx-auto mb-4">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                </div>
+                                <h4 className="text-v-text font-semibold text-base">Muhammad Mohsin</h4>
+                                <p className="text-v-muted text-sm mt-1">Co-Founder</p>
+                            </a>
+                            <a href="https://www.linkedin.com/in/malik-subhan-469224414/" target="_blank" rel="noopener noreferrer" className="fade-in v-card p-6 text-center block hover:border-[rgba(139,92,246,0.4)]" style={{transitionDelay:'0.05s'}}>
+                                <div className="w-12 h-12 rounded-full bg-[rgba(139,92,246,0.08)] flex items-center justify-center mx-auto mb-4">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                </div>
+                                <h4 className="text-v-text font-semibold text-base">Malik Subhan</h4>
+                                <p className="text-v-muted text-sm mt-1">Co-Founder</p>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           FAQ
+        ──────────────────────────────────────────── */
+        function FAQ() {
+            const ref = useScrollAnim();
+            const [open, setOpen] = useState(null);
+
+            const faqs = [
+                { q: "Can the AI receptionist book appointments directly into our calendar?", a: "Yes. The AI connects to your calendar in real time. Patients can book, reschedule, or cancel without any manual input from your staff." },
+                { q: "Can it answer calls after hours?", a: "Yes. Veloro operates 24/7. After-hours calls, weekend inquiries, and holiday bookings are handled the same way as business hours." },
+                { q: "Can it handle rescheduling, cancellations, and follow-ups?", a: "Yes. The AI manages the full appointment lifecycle — booking, rescheduling, cancellations, and automated follow-up workflows." },
+                { q: "Do we need to change our current phone system?", a: "Not necessarily. Veloro is designed to integrate with your existing setup. We handle the technical configuration." },
+                { q: "What if we already have a front desk team?", a: "Veloro is built to support your team, not replace them. It handles overflow, after-hours calls, and automation so your staff can focus on in-clinic patient care." },
+            ];
+
+            return (
+                <section ref={ref} id="faq" className="py-24 md:py-32 px-6">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="text-center mb-16">
+                            <span className="fade-in section-label">FAQ</span>
+                            <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">Common <span className="gradient-text">Questions</span></h2>
+                        </div>
+                        <div className="space-y-3">
+                            {faqs.map((f, i) => (
+                                <div key={i} className="fade-in v-card overflow-hidden" style={{transitionDelay:`${i*0.04}s`}}>
+                                    <button className="w-full text-left p-6 flex items-center justify-between gap-4" onClick={() => setOpen(open === i ? null : i)}>
+                                        <span className="text-v-text font-medium text-sm md:text-[15px]">{f.q}</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`text-v-muted flex-shrink-0 transition-transform duration-200 ${open === i ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9"/></svg>
+                                    </button>
+                                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${open === i ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                        <div className="px-6 pb-6 text-v-muted text-sm leading-relaxed">{f.a}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           CONTACT
+        ──────────────────────────────────────────── */
+        function Contact() {
+            const ref = useScrollAnim();
+            const [form, setForm] = useState({ name:'', company:'', email:'', message:'' });
+            const [status, setStatus] = useState('');
+
+            const handleChange = e => setForm({...form, [e.target.name]: e.target.value});
+
+            const handleSubmit = async e => {
+                e.preventDefault();
+                setStatus('sending');
+                try {
+                    /* ── Replace YOUR_FORM_ID with your Formspree form ID ── */
+                    const res = await fetch('https://formspree.io/f/xkoavjlj', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(form),
+                    });
+                    if (res.ok) {
+                        setStatus('success');
+                        setForm({ name:'', company:'', email:'', message:'' });
+                    } else {
+                        setStatus('error');
+                    }
+                } catch {
+                    setStatus('error');
+                }
+            };
+
+            return (
+                <section ref={ref} id="contact" className="py-24 md:py-32 px-6">
+                    <div className="max-w-xl mx-auto">
+                        <div className="text-center mb-12">
+                            <span className="fade-in section-label">Contact</span>
+                            <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl mt-4 text-v-text leading-tight">Ready to Stop<br/><span className="gradient-text">Missing Calls?</span></h2>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="fade-in space-y-4">
+                            <input type="text" name="name" placeholder="Full Name *" required value={form.name} onChange={handleChange} className="input-field"/>
+                            <input type="text" name="company" placeholder="Company / Clinic Name *" required value={form.company} onChange={handleChange} className="input-field"/>
+                            <input type="email" name="email" placeholder="Email Address *" required value={form.email} onChange={handleChange} className="input-field"/>
+                            <textarea name="message" placeholder="What are you looking for? *" required rows="4" value={form.message} onChange={handleChange} className="input-field resize-none"/>
+                            <button type="submit" className="btn-primary w-full text-center" disabled={status === 'sending'}>
+                                {status === 'sending' ? 'Sending...' : 'Send Message'}
+                            </button>
+                            {status === 'success' && <p className="text-green-400 text-sm text-center">Message sent! We'll get back to you soon.</p>}
+                            {status === 'error' && <p className="text-red-400 text-sm text-center">Something went wrong. Please email us directly at teamveloro@gmail.com</p>}
+                        </form>
+
+                        <p className="fade-in text-center text-v-muted text-sm mt-6">
+                            Or book directly: <a href="https://cal.com/veloroai" target="_blank" rel="noopener noreferrer" className="gradient-text font-medium hover:opacity-80 transition-opacity">Book a Free Demo →</a>
+                        </p>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           FINAL CTA
+        ──────────────────────────────────────────── */
+        function FinalCTA() {
+            const ref = useScrollAnim();
+            return (
+                <section ref={ref} className="py-24 md:py-32 px-6 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(139,92,246,0.05)] to-transparent pointer-events-none"></div>
+                    <div className="relative z-10 max-w-3xl mx-auto text-center">
+                        <h2 className="fade-in font-display font-extrabold text-3xl md:text-5xl text-v-text mb-6 leading-tight">Your Next Patient Shouldn't<br/><span className="gradient-text">Go to Voicemail.</span></h2>
+                        <p className="fade-in text-v-muted text-base md:text-lg mb-10 max-w-lg mx-auto">Book a free demo and see exactly how Veloro can be set up for your clinic.</p>
+                        <a href="https://cal.com/veloroai" target="_blank" rel="noopener noreferrer" className="fade-in btn-primary inline-block text-lg !py-4 !px-10">Book a Free Demo</a>
+                    </div>
+                </section>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           FOOTER (Updated with LinkedIn & Instagram URLs)
+        ──────────────────────────────────────────── */
+        function Footer() {
+            const links = [
+                { label: 'Services', href: '#services' },
+                { label: 'How It Works', href: '#process' },
+                { label: 'Pricing', href: '#pricing' },
+                { label: 'About', href: '#about' },
+                { label: 'Contact', href: '#contact' },
+            ];
+            return (
+                <footer className="border-t border-v-border py-12 md:py-16 px-6">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 mb-12">
+                            <div>
+                                <div className="flex items-center gap-3 mb-4">
+    <img
+        src="./assets/logo.png"
+        alt="Veloro Logo"
+        className="h-10 w-auto"
+    />
+    <span className="font-display font-bold text-lg text-v-text tracking-tight">
+        Veloro
+    </span>
+</div>
+                                <p className="text-v-muted text-sm">AI Automation Systems for Modern Businesses</p>
+                            </div>
+                            <div>
+                                <h4 className="text-v-text font-semibold text-sm mb-4">Quick Links</h4>
+                                <div className="space-y-2.5">
+                                    {links.map(l => (
+                                        <a key={l.href} href={l.href} onClick={e => { e.preventDefault(); scrollTo(l.href); }} className="block text-v-muted text-sm hover:text-v-text transition-colors">{l.label}</a>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <h4 className="text-v-text font-semibold text-sm mb-4">Get in Touch</h4>
+                                <a href="mailto:teamveloro@gmail.com" className="block text-v-muted text-sm hover:text-v-text transition-colors mb-4">teamveloro@gmail.com</a>
+                                <div className="flex gap-4">
+                                    <a href="https://www.instagram.com/velorohq/" target="_blank" rel="noopener noreferrer" className="text-v-muted hover:text-v-text transition-colors" aria-label="Instagram">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                                    </a>
+                                    <a href="https://www.linkedin.com/company/veloroaims" target="_blank" rel="noopener noreferrer" className="text-v-muted hover:text-v-text transition-colors" aria-label="LinkedIn">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="border-t border-v-border pt-8 text-center">
+                            <p className="text-[#444] text-xs">© 2025 Veloro AI. All rights reserved.</p>
+                        </div>
+                    </div>
+                </footer>
+            );
+        }
+
+        /* ────────────────────────────────────────────
+           APP
+        ──────────────────────────────────────────── */
+        function App() {
+            return (
+                <div className="bg-v-bg min-h-screen">
+                    <Navbar />
+                    <Hero />
+                    <PainPoints />
+                    <Services />
+                    <HowItWorks />
+                    <DemoSection />
+                    <UseCases />
+                    <Comparison />
+                    <Pricing />
+                    <About />
+                    <FAQ />
+                    <Contact />
+                    <FinalCTA />
+                    <Footer />
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
